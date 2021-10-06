@@ -1,10 +1,10 @@
 // require('dotenv').config();
 import {URL_LOCAL} from '@env';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, TextInput, View, Text, Button} from 'react-native';
+import {SafeAreaView, TextInput, View, Text, Button, Alert} from 'react-native';
 import axios from 'axios';
 
-const LoginScreen = ({dataSetMethod}) => {
+const LoginScreen = ({navigation}) => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,16 +22,22 @@ const LoginScreen = ({dataSetMethod}) => {
     axios
       .post(url, {mobileNo: mobileNumber})
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data) {
-          dataSetMethod(true);
+          console.log('FROM LOGIN SCREEN', response.data);
+          navigation.navigate('ProfileFill', response.data);
         }
       })
       .catch(err => {
-        // err.response.data.errors.map(error => {
-        //   console.log(error.message);
-        // });
+        let errorMessage = '';
         console.log(err.response.data);
+        err.response.data.errors.map(error => {
+          console.log(error.message);
+          errorMessage += error.message + '\n';
+        });
+        console.log(errorMessage);
+        // TODO: this message comes from server
+        Alert.alert('Error message', errorMessage);
       })
       .finally(() => {
         setIsLoading(false);

@@ -18,30 +18,22 @@ const App = ({navigation}) => {
       const jdata = await JSON.parse(data);
 
       setUserData(jdata);
-      console.log('HOME');
+      // console.log('HOME');
       navigation.reset({
         index: 0,
         routes: [{name: 'Home'}],
       });
     } else {
-      console.log('LOGIn');
-      setDataIsAvailable(false);
+      // console.log('LOGIn');
+      // setDataIsAvailable(false);
       navigation.reset({
         index: 0,
+        // TODO: here i have to change it again to login when profile fill completes
         routes: [{name: 'LoginScreen'}],
+        // routes: [{name: 'ProfileFill'}],
       });
       // navigation.navigate('LoginScreen');
     }
-  };
-
-  const setData = async () => {
-    const obj = {name: 'JAYDEEP', lname: 'VAGHELA'};
-    try {
-      console.log('SET DATA :: ', obj);
-      await AsyncStorage.setItem('@userData', JSON.stringify(obj));
-      setDataIsAvailable(true);
-      setUserData(obj);
-    } catch (error) {}
   };
 
   const clearData = async () => {

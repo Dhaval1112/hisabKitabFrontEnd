@@ -4,20 +4,29 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Home from './Home';
-import {HomeHeaderStyle, LoginHeaderStyle} from '../styles/Headers';
+import {HomeHeaderStyle, makeHeaderStyle} from '../styles/Headers';
 import App from '../App';
 import LoginScreen from './LoginScreen';
+import ProfileSetScreen from './ProfileSetScreen';
 
 const Stack = createNativeStackNavigator();
 // this is style for header
 
-const stackCreator = (name, component) => {
+const stackCreatorWithoutHeader = (name, component) => {
+  return (
+    <Stack.Screen
+      options={{headerShown: false}}
+      name={name}
+      component={component}></Stack.Screen>
+  );
+};
+
+const stackCreator = (name, component, title) => {
   return (
     <Stack.Screen
       name={name}
       component={component}
-      // options={HomeHeaderStyle}
-    ></Stack.Screen>
+      options={makeHeaderStyle(title)}></Stack.Screen>
   );
 };
 
@@ -27,14 +36,11 @@ const NavigationHandeler = () => {
       {/* <Stack.Navigator initialRouteName="Home">
         {stackCreator('Home', Home)}
       </Stack.Navigator> */}
-      <Stack.Navigator
-        initialRouteName="App"
-        screenOptions={{
-          headerShown: false,
-        }}>
-        {stackCreator('App', App)}
-        {stackCreator('Home', Home)}
-        {stackCreator('LoginScreen', LoginScreen)}
+      <Stack.Navigator initialRouteName="App">
+        {stackCreator('App', App, 'App')}
+        {stackCreator('Home', Home, 'HisabKitab')}
+        {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
+        {stackCreator('ProfileFill', ProfileSetScreen, 'Profile page')}
       </Stack.Navigator>
     </NavigationContainer>
   );
