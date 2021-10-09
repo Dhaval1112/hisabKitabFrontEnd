@@ -8,6 +8,7 @@ import {HomeHeaderStyle, makeHeaderStyle} from '../styles/Headers';
 import App from '../App';
 import LoginScreen from './LoginScreen';
 import ProfileSetScreen from './ProfileSetScreen';
+import AddCustomer from './AddCustomer';
 
 const Stack = createNativeStackNavigator();
 // this is style for header
@@ -40,7 +41,8 @@ const NavigationHandeler = () => {
         {stackCreator('App', App, 'App')}
         {stackCreator('Home', Home, 'HisabKitab')}
         {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
-        {stackCreator('ProfileFill', ProfileSetScreen, 'Profile page')}
+        {stackCreator('ProfileFill', ProfileSetScreen, 'Profile')}
+        {stackCreator('AddCustomer', AddCustomer, 'Add Customer')}
       </Stack.Navigator>
     </NavigationContainer>
   );

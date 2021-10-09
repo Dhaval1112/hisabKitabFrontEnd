@@ -1,3 +1,4 @@
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {
   Button,
@@ -9,13 +10,18 @@ import {
 } from 'react-native';
 import FAB from '../components/FAB';
 
-const Home = () => {
+const Home = ({navigation}) => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView contentContainerStyle={{flex: 1}}>
         <View style={{flex: 1}}>
           <Text>HEllo from home</Text>
-          <FAB iconValue="+" handler={() => {}} />
+          <FAB
+            iconValue="+"
+            handler={() => {
+              navigation.navigate('AddCustomer');
+            }}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
