@@ -24,6 +24,7 @@ const LoginScreen = ({navigation}) => {
       .then(response => {
         // console.log(response.data);
         if (response.data) {
+          
           console.log('FROM LOGIN SCREEN', response.data);
           navigation.navigate('ProfileFill', response.data);
         }

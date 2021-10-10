@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import App from '../App';
 import LoginScreen from './LoginScreen';
 import ProfileSetScreen from './ProfileSetScreen';
 import AddCustomer from './AddCustomer';
+import {userContext} from '../context/userContext';
 
 const Stack = createNativeStackNavigator();
 // this is style for header
@@ -32,19 +33,24 @@ const stackCreator = (name, component, title) => {
 };
 
 const NavigationHandeler = () => {
+  const [user, setUser] = useState({name: 'jaydeep'});
+
+  const [entryList, setEntryList] = useState([]);
   return (
-    <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName="Home">
+    <userContext.Provider value={{user, setUser, entryList, setEntryList}}>
+      <NavigationContainer>
+        {/* <Stack.Navigator initialRouteName="Home">
         {stackCreator('Home', Home)}
       </Stack.Navigator> */}
-      <Stack.Navigator initialRouteName="App">
-        {stackCreator('App', App, 'App')}
-        {stackCreator('Home', Home, 'HisabKitab')}
-        {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
-        {stackCreator('ProfileFill', ProfileSetScreen, 'Profile')}
-        {stackCreator('AddCustomer', AddCustomer, 'Add Customer')}
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Navigator initialRouteName="App">
+          {stackCreator('App', App, 'App')}
+          {stackCreator('Home', Home, 'HisabKitab')}
+          {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
+          {stackCreator('ProfileFill', ProfileSetScreen, 'Profile')}
+          {stackCreator('AddCustomer', AddCustomer, 'Add Customer')}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </userContext.Provider>
   );
 };
 

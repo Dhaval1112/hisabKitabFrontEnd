@@ -17,7 +17,10 @@ const ProfileSetScreen = ({navigation, route}) => {
     console.log('HERE IN SET DATA');
     try {
       await AsyncStorage.setItem('@userData', JSON.stringify(userData));
-      navigation.navigate('Home');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Home'}],
+      });
     } catch (error) {
       console.error(error);
     }
@@ -36,14 +39,21 @@ const ProfileSetScreen = ({navigation, route}) => {
     }
 
     if (message == '') {
-      Alert.alert('You have provided all details', 'Congrats');
+      // Alert.alert('You have provided all details', 'Congrats');
       axios
         .post(URL_LOCAL + 'updateProfile', {name, lastName, email, userId})
         .then(response => {
           console.log('User profile is updated', response.data);
           setData(response.data);
+          Alert.alert('You have provided all details', 'Congrats');
         })
-        .catch(err => {});
+        .catch(err => {
+          let message = '';
+          err.response.data.errors.map(
+            data => (message += data.message + '\n'),
+          );
+          Alert.alert('Required fields ', message);
+        });
     } else {
       Alert.alert('Required fields ', message);
     }
@@ -52,8 +62,11 @@ const ProfileSetScreen = ({navigation, route}) => {
   // TODO: for setting already signup user's data
   useEffect(() => {
     let usersData = route.params;
+
     setuserId(usersData._id);
+
     console.log('USER ID ', userId);
+
     if (usersData.profile !== undefined) {
       console.log('Users data in PROFILE SCREEN in if ', route.params);
       setName(usersData.profile.name);

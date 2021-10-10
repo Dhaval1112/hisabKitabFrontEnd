@@ -1,14 +1,31 @@
 import React from 'react';
-import {Alert, LogBox, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
+import addNewCustomer from '../Functions/addNewCustomer';
+
+const callHelper = item => {
+  addNewCustomer(item)
+    .then(data => {
+      // console.log('GOT USERS DATA', data);
+      // TODO: process for creating room
+      Alert.alert(
+        'Create customer',
+        data._id + '\n' + item.name + '\n' + item.num,
+      );
+    })
+    .catch(err => {
+      Alert.alert('Error message', err);
+    });
+};
 
 const ListItem = ({item}) => {
   return (
-    <Pressable
+    <TouchableOpacity
       style={styles.list}
       //   Alert.alert('Details', item.name + '\n' + item.num)
-      onPress={() => {
-        Alert.alert('Details', item.name + '\n' + item.num);
+      onPress={async () => {
+        // Alert.alert('Details', item.name + '\n' + item.num);
+        const user = await callHelper(item);
       }}>
       <View style={styles.avatar}>
         <UserAvatar size={32} name={item.name} />
@@ -17,7 +34,7 @@ const ListItem = ({item}) => {
         <Text style={{color: 'black'}}>{item.name}</Text>
         <Text>{item.num}</Text>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 
