@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,6 +10,10 @@ import LoginScreen from './LoginScreen';
 import ProfileSetScreen from './ProfileSetScreen';
 import AddCustomer from './AddCustomer';
 import {userContext} from '../context/userContext';
+import {customersContext} from '../context/customersContext';
+import CustomerPage from './CustomerPage';
+import {currentCustomerContext} from '../context/currentCustomerContext';
+CustomerPage;
 
 const Stack = createNativeStackNavigator();
 // this is style for header
@@ -36,21 +40,39 @@ const NavigationHandeler = () => {
   const [user, setUser] = useState({name: 'jaydeep'});
 
   const [entryList, setEntryList] = useState([]);
+
+  const [customers, setCustomers] = useState([]);
+
+  const [currentCustomer, setCurrentCustomer] = useState(null);
+  console.log('\n\n cc', currentCustomer);
+
   return (
-    <userContext.Provider value={{user, setUser, entryList, setEntryList}}>
-      <NavigationContainer>
-        {/* <Stack.Navigator initialRouteName="Home">
+    <customersContext.Provider value={{customers, setCustomers}}>
+      <userContext.Provider value={{user, setUser, entryList, setEntryList}}>
+        <currentCustomerContext.Provider
+          value={{currentCustomer, setCurrentCustomer}}>
+          <NavigationContainer>
+            {/* <Stack.Navigator initialRouteName="Home">
         {stackCreator('Home', Home)}
       </Stack.Navigator> */}
-        <Stack.Navigator initialRouteName="App">
-          {stackCreator('App', App, 'App')}
-          {stackCreator('Home', Home, 'HisabKitab')}
-          {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
-          {stackCreator('ProfileFill', ProfileSetScreen, 'Profile')}
-          {stackCreator('AddCustomer', AddCustomer, 'Add Customer')}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </userContext.Provider>
+            <Stack.Navigator initialRouteName="App">
+              {stackCreator('App', App, 'App')}
+              {stackCreator('Home', Home, 'HisabKitab')}
+              {stackCreatorWithoutHeader('LoginScreen', LoginScreen)}
+              {stackCreator('ProfileFill', ProfileSetScreen, 'Profile')}
+              {stackCreator('AddCustomer', AddCustomer, 'Add Customer')}
+              {stackCreator(
+                'CustomerPage',
+                CustomerPage,
+                currentCustomer == null
+                  ? 'Customer'
+                  : currentCustomer.customerName,
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </currentCustomerContext.Provider>
+      </userContext.Provider>
+    </customersContext.Provider>
   );
 };
 

@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Text} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {userContext} from './context/userContext';
 
 const App = ({navigation}) => {
   // states
   const [dataIsAvailable, setDataIsAvailable] = useState(false);
 
-  const [userData, setUserData] = useState({});
+  // const [userData, setUserData] = useState({});
+  const {user, setUser} = useContext(userContext);
 
   // mothods
 
@@ -14,11 +16,11 @@ const App = ({navigation}) => {
     const data = await AsyncStorage.getItem('@userData');
     // console.log(data);
     if (data !== null) {
-      setDataIsAvailable(true);
+      // setDataIsAvailable(true);
       const jdata = await JSON.parse(data);
+      setUser(jdata);
 
-      setUserData(jdata);
-      // console.log('HOME');
+      console.log('HOME', jdata);
       navigation.reset({
         index: 0,
         routes: [{name: 'Home'}],
@@ -48,7 +50,7 @@ const App = ({navigation}) => {
   }, []);
 
   //    render things accordingly
-  return dataIsAvailable ? (
+  return user != null ? (
     <>
       <Text>Redirect to home page</Text>
     </>

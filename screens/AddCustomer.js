@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -12,9 +12,11 @@ import {
 import getContacts from '../components/getContacts';
 
 import ListItem from '../components/ListItem';
+import {userContext} from '../context/userContext';
 
 const AddCustomer = ({navigation}) => {
   const [contacts, setContacts] = useState([]);
+  let {user} = useContext(userContext);
 
   useEffect(() => {
     getContacts(setContacts, navigation);
@@ -22,7 +24,7 @@ const AddCustomer = ({navigation}) => {
 
   const renderItem = useCallback(({item}) => {
     if (item != undefined) {
-      return <ListItem item={item} />;
+      return <ListItem item={item} userId={user._id} navigation={navigation} />;
     }
   }, []);
 
