@@ -15,12 +15,15 @@ import FAB from '../components/FAB';
 import {customersContext} from '../context/customersContext';
 import {userContext} from '../context/userContext';
 import {URL_LOCAL} from '@env';
+import {currentCustomerContext} from '../context/currentCustomerContext';
 
 const Home = ({navigation}) => {
   const {user, setUser} = useContext(userContext);
 
   const {customers, setCustomers} = useContext(customersContext);
   console.log('CUSTO', customers);
+
+  const {setCurrentCustomer} = useContext(currentCustomerContext);
 
   useEffect(() => {
     const url = URL_LOCAL + 'getCustomers';
@@ -56,7 +59,13 @@ const Home = ({navigation}) => {
 
   const renderItem = useCallback(({item}) => {
     if (item != undefined) {
-      return <CustomerListItem item={item} />;
+      return (
+        <CustomerListItem
+          item={item}
+          navigation={navigation}
+          setCurrentCustomer={setCurrentCustomer}
+        />
+      );
     }
   }, []);
 

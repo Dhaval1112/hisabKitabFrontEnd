@@ -13,6 +13,7 @@ import {userContext} from '../context/userContext';
 import {customersContext} from '../context/customersContext';
 import CustomerPage from './CustomerPage';
 import {currentCustomerContext} from '../context/currentCustomerContext';
+import DoEntryScreen from './DoEntryScreen';
 CustomerPage;
 
 const Stack = createNativeStackNavigator();
@@ -64,6 +65,13 @@ const NavigationHandeler = () => {
               {stackCreator(
                 'CustomerPage',
                 CustomerPage,
+                currentCustomer == null
+                  ? 'Customer'
+                  : currentCustomer.customerName,
+              )}
+              {stackCreator(
+                'DoEntryScreen',
+                DoEntryScreen,
                 currentCustomer == null
                   ? 'Customer'
                   : currentCustomer.customerName,

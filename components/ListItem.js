@@ -40,7 +40,7 @@ const callHelper = (
 
                   setCurrentCustomer(data.room);
 
-                  navigation.navigate('CustomerPage', {data});
+                  navigation.navigate('CustomerPage', data.room);
                   console.log('\n\nadded', customers);
                 })
                 .catch(err => {

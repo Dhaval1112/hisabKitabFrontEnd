@@ -1,15 +1,25 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
+// function to redirect
+const navigateDataToCustomer = (navigation, item, setCurrentCustomer) => {
+  console.log(item);
+  setCurrentCustomer(item);
+  navigation.navigate('CustomerPage', item);
+};
 
-export default function CustomerListItem({item}) {
+// file component
+export default function CustomerListItem({
+  item,
+  navigation,
+  setCurrentCustomer,
+}) {
   return (
     <TouchableOpacity
       style={styles.list}
       //   Alert.alert('Details', item.name + '\n' + item.num)
       onPress={() => {
-        // Alert.alert('Details', item.name + '\n' + item.num);
-        // const user = await callHelper(item, userId);
+        navigateDataToCustomer(navigation, item, setCurrentCustomer);
       }}>
       <View style={styles.avatar}>
         <UserAvatar size={32} name={item.customerName} />
