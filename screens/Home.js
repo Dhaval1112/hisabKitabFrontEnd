@@ -1,12 +1,13 @@
 import {NavigationContainer} from '@react-navigation/native';
 import axios from 'axios';
-import React, {useCallback, useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
   SafeAreaView,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -16,14 +17,18 @@ import {customersContext} from '../context/customersContext';
 import {userContext} from '../context/userContext';
 import {URL_LOCAL} from '@env';
 import {currentCustomerContext} from '../context/currentCustomerContext';
+import {socketContext} from '../context/socketContext';
 
 const Home = ({navigation}) => {
   const {user, setUser} = useContext(userContext);
 
   const {customers, setCustomers} = useContext(customersContext);
-  console.log('CUSTO', customers);
+
+  // console.log('CUSTO', customers);
 
   const {setCurrentCustomer} = useContext(currentCustomerContext);
+
+  const {socket} = useContext(socketContext);
 
   useEffect(() => {
     const url = URL_LOCAL + 'getCustomers';
@@ -34,7 +39,7 @@ const Home = ({navigation}) => {
       if (response.data) {
         // console.log('FROM LOGIN SCREEN', response.data);
         setCustomers(response.data.rooms);
-        console.log('\n\n\nCustomers', customers);
+        // console.log('\n\n\nCustomers', customers);
         // navigation.navigate('ProfileFill', response.data);
       }
     });
@@ -68,7 +73,9 @@ const Home = ({navigation}) => {
       );
     }
   }, []);
+  console.log('HOME SCREEN CHECKING');
 
+  const [state, setState] = useState('');
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}} style={{flex: 1}}>

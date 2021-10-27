@@ -20,9 +20,10 @@ export default function CustomerListItem({
       //   Alert.alert('Details', item.name + '\n' + item.num)
       onPress={() => {
         navigateDataToCustomer(navigation, item, setCurrentCustomer);
+        // console.log('ITEM ', item);
       }}>
       <View style={styles.avatar}>
-        <UserAvatar size={32} name={item.customerName} />
+        <UserAvatar size={35} name={item.customerName} />
       </View>
       <View
         style={{
@@ -36,11 +37,16 @@ export default function CustomerListItem({
             //   backgroundColor: 'gray'
             overflow: 'hidden',
           }}>
-          <Text style={{color: 'black', fontWeight: '500'}}>
+          <Text style={{color: 'black', fontWeight: '600', fontSize: 17}}>
             {item.customerName}
           </Text>
-          <Text>
-            {item.entries.length == 0 ? 'Do transaction' : 'last transaction'}
+          <Text style={{fontSize: 12}}>
+            ₹ {item.entries[item.entries.length - 1]?.amount}
+            {item.entries.length == 0
+              ? ' No transaction'
+              : item.entries[item.entries.length - 1]?.isRecieve
+              ? ' Last Recieved'
+              : ' Last Given'}
           </Text>
         </View>
 
@@ -75,5 +81,5 @@ const styles = new StyleSheet.create({
     borderBottomColor: 'gray',
     borderWidth: 0.2,
   },
-  avatar: {width: 32, height: 32, marginRight: 12},
+  avatar: {width: 35, height: 37, marginRight: 12},
 });

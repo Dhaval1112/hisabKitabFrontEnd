@@ -1,24 +1,101 @@
-import React, {useState} from 'react';
-import {Button, Image, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Alert,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {socketContext} from '../context/socketContext';
+import {userContext} from '../context/userContext';
+import {currentCustomerContext} from '../context/currentCustomerContext';
+import {customersContext} from '../context/customersContext';
 
-export default function DoEntryScreen({route}) {
-  const isRecieve = route.params;
+const DoEntryScreen = ({route, navigation}) => {
+  const {isRecieve, room} = route.params;
+
+  // extra all customers
+  const {customers, setCustomers} = useContext(customersContext);
+
+  // console.log('Recieve ', isRecieve);
+
   const [amount, setAmount] = useState('');
 
   const [showCalender, setShowCalender] = useState(false);
 
   const [date, setDate] = useState(new Date());
-  console.log('DO ENTRY SCREEN IS RECIEVE', isRecieve);
+  const [description, setDescription] = useState('');
+  const {currentCustomer, setCurrentCustomer} = useContext(
+    currentCustomerContext,
+  );
+
+  // user data from global object
+  const {user} = useContext(userContext);
+  // console.log('DO ENTRY SCREEN IS RECIEVE', isRecieve);
+
+  useEffect(() => {
+    socket.on('EntryStatus', data => {
+      // setCount(++count);
+
+      // count++;
+      // console.log('SOCKET DATA IN HANDLER', data);
+      if (data.status) {
+        // console.log('\n\nCustomers \n', customers);
+        setCustomers(
+          customers.map(customerItem => {
+            if (customerItem._id == currentCustomer._id) {
+              console.log('MATCH ');
+              customerItem.grandTotal = data.entry.isRecieve
+                ? customerItem.grandTotal + data.entry.amount
+                : customerItem.grandTotal - data.entry.amount;
+              // customerItem.grandTotal += amount;
+              customerItem.entries.push(data.entry);
+
+              // console.log('CUSTOMER ENTRY ', customerItem);
+            }
+            return customerItem;
+          }),
+        );
+
+        // currentCustomer.entries.push(data.entry);
+        // setCurrentCustomer(currentCustomer);
+        Alert.alert('Success', data.entry.amount + '');
+        navigation.navigate('CustomerPage', currentCustomer);
+      } else {
+        Alert.alert('Failed', 'SOMETHING ELSE');
+      }
+    });
+    return () => {
+      socket.off('EntryStatus');
+    };
+  }, []);
 
   const setSelectedDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    // setShow(Platform.OS === 'ios');
-    console.log('current date is :: ', currentDate);
     setShowCalender(false);
 
     setDate(currentDate);
+  };
+
+  const {socket} = useContext(socketContext);
+
+  const doEntry = () => {
+    console.log('ENTRY CALLED', socket.id);
+    socket.emit('doEntry', {
+      roomId: room._id,
+      entry: {
+        date,
+        amount: parseFloat(amount),
+        description,
+        remainAmount: currentCustomer.grandTotal,
+        isRecieve,
+        byWhome: user._id,
+      },
+    });
   };
 
   return (
@@ -53,7 +130,7 @@ export default function DoEntryScreen({route}) {
               } else {
                 setAmount(text);
               }
-              console.log(text);
+              // console.log(text);
             }}
             autoFocus={true}
             placeholder="Amount"></TextInput>
@@ -65,11 +142,11 @@ export default function DoEntryScreen({route}) {
         </View>
         <View style={{display: amount > 0 ? 'flex' : 'none'}}>
           <TextInput
-            placeholder="Description "
-            // value={mobileNumber}
-            keyboardType="numeric"
-            // onChangeText={setMobileNumber}
-            style={styles.textInput}
+            placeholder=" Description "
+            keyboardType="default"
+            style={{...styles.textInput, paddingLeft: 12}}
+            value={description}
+            onChangeText={setDescription}
           />
 
           {/* <View>
@@ -120,11 +197,10 @@ export default function DoEntryScreen({route}) {
                   textAlign: 'center',
                   borderRadius: 5,
                   fontWeight: 'bold',
-
                   // backgroundColor: 'red',
                 }}
                 onPress={() => {
-                  console.log('Pressed');
+                  // console.log('Pressed');
                   setShowCalender(true);
                 }}>
                 {moment(date).format('DD-MM-YYYY')}
@@ -136,6 +212,7 @@ export default function DoEntryScreen({route}) {
           <View style={{position: 'absolute', bottom: 5, width: '100%'}}>
             <Button
               title={isRecieve ? 'RECIEVE' : 'GIVEN'}
+              onPress={doEntry}
               color={isRecieve ? 'green' : 'red'}></Button>
           </View>
         ) : (
@@ -144,7 +221,7 @@ export default function DoEntryScreen({route}) {
       </View>
     </>
   );
-}
+};
 
 const styles = new StyleSheet.create({
   textInput: {
@@ -154,3 +231,5 @@ const styles = new StyleSheet.create({
     marginVertical: 5,
   },
 });
+
+export default DoEntryScreen;
