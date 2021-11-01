@@ -32,9 +32,12 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     const url = URL_LOCAL + 'getCustomers';
-    console.log(url, {supplierId: user._id});
 
-    axios.post(url).then(response => {
+    // console.log('\n\n\nURL AND SUPPLIER ID IN HOME', url, {
+    //   supplierId: user._id,
+    // });
+
+    axios.post(url, {supplierId: user._id}).then(response => {
       // console.log(response.data);
       if (response.data) {
         // console.log('FROM LOGIN SCREEN', response.data);
@@ -88,7 +91,16 @@ const Home = ({navigation}) => {
             renderItem={renderItem}
           />
         ) : (
-          <Text>not available</Text>
+          <Text
+            style={{
+              fontSize: 24,
+              textAlign: 'center',
+              flex: 1,
+              alignContent: 'center',
+              marginTop: '60%',
+            }}>
+            No Customer available add new Customer by pressing + icon
+          </Text>
         )}
         <FAB
           iconValue="+"

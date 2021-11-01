@@ -41,12 +41,15 @@ export default function CustomerListItem({
             {item.customerName}
           </Text>
           <Text style={{fontSize: 12}}>
-            ₹ {item.entries[item.entries.length - 1]?.amount}
             {item.entries.length == 0
-              ? ' No transaction'
+              ? ' No transactions'
               : item.entries[item.entries.length - 1]?.isRecieve
-              ? ' Last Recieved'
-              : ' Last Given'}
+              ? '₹' +
+                item.entries[item.entries.length - 1]?.amount +
+                ' Last Recieved'
+              : '₹' +
+                item.entries[item.entries.length - 1]?.amount +
+                ' Last Given'}
           </Text>
         </View>
 
@@ -60,10 +63,10 @@ export default function CustomerListItem({
               textAlign: 'center',
               textAlignVertical: 'center',
               //   backgroundColor: 'yellow',
-              color: 'green',
+              color: item.grandTotal >= 0 ? 'green' : 'red',
               overflow: 'hidden',
             }}>
-            {item.grandTotal}
+            ₹ {Math.abs(item.grandTotal)}
           </Text>
         </View>
       </View>

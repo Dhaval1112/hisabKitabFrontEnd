@@ -18,6 +18,7 @@ const callHelper = (
     .then(data => {
       // console.log('GOT USERS DATA', data);
       // TODO: process for creating room
+      console.log('\n\n USER DATA IN LISTITEM', data);
       Alert.alert(
         'Create customer',
         data._id + '\n' + item.name + '\n' + item.num,

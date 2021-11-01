@@ -32,7 +32,16 @@ export default function CustomerPage({route, navigation}) {
             customer={currentCustomer}></EntriesCustomerElements>
         </View>
       ) : (
-        <Text>Show them pic</Text>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: 'gray',
+            textAlign: 'center',
+            marginTop: '50%',
+          }}>
+          Do Transaction with {currentCustomer.customerName}
+        </Text>
       )}
       {/* do transaction */}
       <View
@@ -45,8 +54,14 @@ export default function CustomerPage({route, navigation}) {
           style={{
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-            {customer.grandTotal}
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: customer.grandTotal >= 0 ? 'green' : 'red',
+            }}>
+            ₹ {Math.abs(customer.grandTotal)}
+            {customer.grandTotal > 0 ? ' ADVANCE' : ' DUE'}
           </Text>
         </View>
         {/* view for ammount */}

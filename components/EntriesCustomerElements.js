@@ -14,17 +14,16 @@ function EntriesCustomerElements({customer}) {
         <Text
           key={item._id}
           style={item.isRecieve ? styles.recieve : styles.given}>
-          {item.amount}
+          ₹ {item.amount}
         </Text>
         {item.description != '' && (
           <Text style={styles.descriptionStyle}>{item.description}</Text>
         )}
-        {item.remainAmount && (
-          <Text style={styles.remainAmountStyle}>
-            ₹ {Math.abs(item.remainAmount)}
-            {item.remainAmount > 0 ? ' ADVANCE' : ' DUE'}
-          </Text>
-        )}
+
+        <Text style={styles.remainAmountStyle}>
+          ₹ {Math.abs(item.remainAmount)}
+          {item?.remainAmount > 0 ? ' ADVANCE' : ' DUE'}
+        </Text>
       </View>
     );
   };

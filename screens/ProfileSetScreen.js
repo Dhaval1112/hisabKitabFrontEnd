@@ -17,10 +17,13 @@ const ProfileSetScreen = ({navigation, route}) => {
     console.log('HERE IN SET DATA');
     try {
       await AsyncStorage.setItem('@userData', JSON.stringify(userData));
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Home'}],
-      });
+      // TODO: changed here
+      // navigation.reset({
+      //   index: 0,
+      //   routes: [{name: 'Home'}],
+      // });
+
+      navigation.navigate('App');
     } catch (error) {
       console.error(error);
     }
