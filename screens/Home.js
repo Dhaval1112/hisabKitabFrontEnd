@@ -18,12 +18,14 @@ import {userContext} from '../context/userContext';
 import {URL_LOCAL} from '@env';
 import {currentCustomerContext} from '../context/currentCustomerContext';
 import {socketContext} from '../context/socketContext';
+import LoadingComponent from '../components/LoadingComponent';
 
 const Home = ({navigation}) => {
   const {user, setUser} = useContext(userContext);
 
   const {customers, setCustomers} = useContext(customersContext);
 
+  const [isLoading, setIsLoading] = useState(false);
   // console.log('CUSTO', customers);
 
   const {setCurrentCustomer} = useContext(currentCustomerContext);
@@ -37,6 +39,7 @@ const Home = ({navigation}) => {
     //   supplierId: user._id,
     // });
 
+    setIsLoading(true);
     axios.post(url, {supplierId: user._id}).then(response => {
       // console.log(response.data);
       if (response.data) {
@@ -45,6 +48,7 @@ const Home = ({navigation}) => {
         // console.log('\n\n\nCustomers', customers);
         // navigation.navigate('ProfileFill', response.data);
       }
+      setIsLoading(false);
     });
 
     /*
@@ -79,12 +83,15 @@ const Home = ({navigation}) => {
   console.log('HOME SCREEN CHECKING');
 
   const [state, setState] = useState('');
+  // return <LoadingComponent />;
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1}} style={{flex: 1}}>
         {/* <Text>{`${user.profile.name} ${user.profile.lastName} ${user.profile.email}`}</Text>
          */}
-        {customers.length != 0 ? (
+        {isLoading ? (
+          <LoadingComponent />
+        ) : customers.length != 0 ? (
           <FlatList
             data={customers}
             initialNumToRender={100}

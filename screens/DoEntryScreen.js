@@ -14,6 +14,7 @@ import {socketContext} from '../context/socketContext';
 import {userContext} from '../context/userContext';
 import {currentCustomerContext} from '../context/currentCustomerContext';
 import {customersContext} from '../context/customersContext';
+import LoadingComponent from '../components/LoadingComponent';
 
 const DoEntryScreen = ({route, navigation}) => {
   const {isRecieve, room} = route.params;
@@ -26,6 +27,7 @@ const DoEntryScreen = ({route, navigation}) => {
   const [amount, setAmount] = useState('');
 
   const [showCalender, setShowCalender] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState('');
@@ -63,11 +65,19 @@ const DoEntryScreen = ({route, navigation}) => {
 
         // currentCustomer.entries.push(data.entry);
         // setCurrentCustomer(currentCustomer);
-        Alert.alert('Success', data.entry.amount + '');
+        Alert.alert(
+          'Success',
+          '₹ ' +
+            data.entry.amount +
+            '' +
+            (data.entry.isRecieve ? ' Recieved ' : ' Given'),
+        );
+        setIsLoading(false);
         navigation.navigate('CustomerPage', currentCustomer);
       } else {
         Alert.alert('Failed', 'SOMETHING ELSE');
       }
+      setIsLoading(false);
     });
     return () => {
       socket.off('EntryStatus');
@@ -85,6 +95,7 @@ const DoEntryScreen = ({route, navigation}) => {
 
   const doEntry = () => {
     console.log('ENTRY CALLED', socket.id);
+    setIsLoading(true);
     socket.emit('doEntry', {
       roomId: room._id,
       entry: {
@@ -102,54 +113,58 @@ const DoEntryScreen = ({route, navigation}) => {
     <>
       <View style={{marginHorizontal: '5%', flex: 1}}>
         {/* <Text>{amount}</Text> */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginLeft: '32%',
-            marginTop: 20,
-          }}>
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: 'bold',
-            }}>
-            ₹
-          </Text>
-          <TextInput
-            keyboardType="number-pad"
-            style={{
-              fontSize: 40,
-              fontWeight: 'bold',
-              color: isRecieve ? 'green' : 'red',
-            }}
-            value={amount}
-            onChangeText={text => {
-              if (amount > 1000000) {
-                setAmount(amount.substr(0, amount.length - 1));
-              } else {
-                setAmount(text);
-              }
-              // console.log(text);
-            }}
-            autoFocus={true}
-            placeholder="Amount"></TextInput>
-        </View>
-        <View style={{display: amount < 1000000 ? 'none' : 'flex'}}>
-          <Text style={{textAlign: 'center', color: 'red'}}>
-            Invalid amount
-          </Text>
-        </View>
-        <View style={{display: amount > 0 ? 'flex' : 'none'}}>
-          <TextInput
-            placeholder=" Description "
-            keyboardType="default"
-            style={{...styles.textInput, paddingLeft: 12}}
-            value={description}
-            onChangeText={setDescription}
-          />
+        {isLoading ? (
+          <LoadingComponent />
+        ) : (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: '32%',
+                marginTop: 20,
+              }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: 'bold',
+                }}>
+                ₹
+              </Text>
+              <TextInput
+                keyboardType="number-pad"
+                style={{
+                  fontSize: 40,
+                  fontWeight: 'bold',
+                  color: isRecieve ? 'green' : 'red',
+                }}
+                value={amount}
+                onChangeText={text => {
+                  if (amount > 1000000) {
+                    setAmount(amount.substr(0, amount.length - 1));
+                  } else {
+                    setAmount(text);
+                  }
+                  // console.log(text);
+                }}
+                autoFocus={true}
+                placeholder="Amount"></TextInput>
+            </View>
+            <View style={{display: amount < 1000000 ? 'none' : 'flex'}}>
+              <Text style={{textAlign: 'center', color: 'red'}}>
+                Invalid amount
+              </Text>
+            </View>
+            <View style={{display: amount > 0 ? 'flex' : 'none'}}>
+              <TextInput
+                placeholder=" Description "
+                keyboardType="default"
+                style={{...styles.textInput, paddingLeft: 12}}
+                value={description}
+                onChangeText={setDescription}
+              />
 
-          {/* <View>
+              {/* <View>
             <Text
               onPress={() => {
                 console.log('Pressed');
@@ -158,65 +173,67 @@ const DoEntryScreen = ({route, navigation}) => {
             </Text>
           </View> */}
 
-          {showCalender ? (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              // value=""
-              mode="date"
-              maximumDate={new Date()}
-              // is24Hour={true}
-              display="default"
-              onChange={setSelectedDate}></DateTimePicker>
-          ) : (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignSelf: 'center',
-                // backgroundColor: 'red',
-                borderWidth: 2,
-                borderColor: 'green',
-                alignItems: 'center',
-                padding: 5,
-                paddingHorizontal: 10,
+              {showCalender ? (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  // value=""
+                  mode="date"
+                  maximumDate={new Date()}
+                  // is24Hour={true}
+                  display="default"
+                  onChange={setSelectedDate}></DateTimePicker>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignSelf: 'center',
+                    // backgroundColor: 'red',
+                    borderWidth: 2,
+                    borderColor: 'green',
+                    alignItems: 'center',
+                    padding: 5,
+                    paddingHorizontal: 10,
 
-                marginTop: 20,
-                borderRadius: 10,
-              }}>
-              <Image
-                source={require('../icons/calenderIcon.png')}
-                style={{
-                  width: 30,
-                  height: 40,
-                }}
-              />
-              <Text
-                style={{
-                  fontSize: 20,
-                  padding: 8,
-                  textAlign: 'center',
-                  borderRadius: 5,
-                  fontWeight: 'bold',
-                  // backgroundColor: 'red',
-                }}
-                onPress={() => {
-                  // console.log('Pressed');
-                  setShowCalender(true);
-                }}>
-                {moment(date).format('DD-MM-YYYY')}
-              </Text>
+                    marginTop: 20,
+                    borderRadius: 10,
+                  }}>
+                  <Image
+                    source={require('../icons/calenderIcon.png')}
+                    style={{
+                      width: 30,
+                      height: 40,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      padding: 8,
+                      textAlign: 'center',
+                      borderRadius: 5,
+                      fontWeight: 'bold',
+                      // backgroundColor: 'red',
+                    }}
+                    onPress={() => {
+                      // console.log('Pressed');
+                      setShowCalender(true);
+                    }}>
+                    {moment(date).format('DD-MM-YYYY')}
+                  </Text>
+                </View>
+              )}
             </View>
-          )}
-        </View>
-        {amount > 0 ? (
-          <View style={{position: 'absolute', bottom: 5, width: '100%'}}>
-            <Button
-              title={isRecieve ? 'RECIEVE' : 'GIVEN'}
-              onPress={doEntry}
-              color={isRecieve ? 'green' : 'red'}></Button>
-          </View>
-        ) : (
-          <Text> </Text>
+            {amount > 0 ? (
+              <View style={{position: 'absolute', bottom: 5, width: '100%'}}>
+                <Button
+                  title={isRecieve ? 'RECIEVE' : 'GIVEN'}
+                  onPress={doEntry}
+                  color={isRecieve ? 'green' : 'red'}></Button>
+              </View>
+            ) : (
+              <Text> </Text>
+            )}
+          </>
         )}
       </View>
     </>

@@ -2,7 +2,7 @@ import {PermissionsAndroid} from 'react-native';
 
 import Contacts from 'react-native-contacts';
 
-const getContacts = (setContacts, navigation) => {
+const getContacts = (setContacts, navigation, setIsLoading) => {
   PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
     title: 'Contacts',
     message: 'This app would like to view your contacts.',
@@ -47,6 +47,7 @@ const getContacts = (setContacts, navigation) => {
             return a.name.toLowerCase() > b.name.toLowerCase();
           });
           setContacts(requiredDetailedContacts);
+          setIsLoading(false);
           // console.log(contacts);
           // console.log('LAST');
         }

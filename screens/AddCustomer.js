@@ -12,14 +12,18 @@ import {
 import getContacts from '../components/getContacts';
 
 import ListItem from '../components/ListItem';
+import LoadingComponent from '../components/LoadingComponent';
 import {userContext} from '../context/userContext';
 
 const AddCustomer = ({navigation}) => {
   const [contacts, setContacts] = useState([]);
   let {user} = useContext(userContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    getContacts(setContacts, navigation);
+    setIsLoading(true);
+    getContacts(setContacts, navigation, setIsLoading);
   }, []);
 
   const renderItem = useCallback(({item}) => {
@@ -29,7 +33,7 @@ const AddCustomer = ({navigation}) => {
   }, []);
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {/* <FlatList
         data={contacts}
         initialNumToRender={50}
@@ -39,21 +43,24 @@ const AddCustomer = ({navigation}) => {
       ></FlatList> */}
 
       {/* TODO: last flatlist */}
+      {isLoading ? (
+        <LoadingComponent />
+      ) : (
+        <FlatList
+          data={contacts}
+          initialNumToRender={100}
+          renderItem={renderItem}
+          // maxToRenderPerBatch={150}
+          // windowSize={30}
+          // updateCellsBatchingPeriod={10}
 
-      <FlatList
-        data={contacts}
-        initialNumToRender={100}
-        renderItem={renderItem}
-        // maxToRenderPerBatch={150}
-        // windowSize={30}
-        // updateCellsBatchingPeriod={10}
-
-        // renderItem={({item}) => {
-        //   if (item != undefined) {
-        //     return <ListItem item={item} />;
-        //   }
-        // }}
-      />
+          // renderItem={({item}) => {
+          //   if (item != undefined) {
+          //     return <ListItem item={item} />;
+          //   }
+          // }}
+        />
+      )}
     </View>
   );
 };

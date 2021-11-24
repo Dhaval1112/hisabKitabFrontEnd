@@ -76,7 +76,9 @@ const NavigationHandeler = () => {
 
     socket.on('connect', () => {
       console.log('socket is now connected', socket.id);
-      setSocket(socket);
+      if (socket == null) {
+        setSocket(this.socket);
+      }
       // socket.emit('chat', {say: 'BYE BYE'});
     });
 
